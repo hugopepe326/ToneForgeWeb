@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">ToneForge</string>
+    <string name="nav_capture">Capturar</string>
+    <string name="nav_analyzer">Análisis</string>
+    <string name="nav_patches">Parches</string>
+    <string name="subtitle_studio">MOTOR LOCAL NAM &amp; SNAPTONE PARA VALETON GP-5</string>
+    <string name="tab_file">Archivo</string>
+    <string name="tab_link">Enlace</string>
+    <string name="tab_mic">Micro / USB</string>
+    <string name="pick_audio_file">Seleccionar archivo de audio</string>
+    <string name="supported_formats">WAV, MP3, M4A, FLAC, OGG, MP4, MKV · FFmpeg 100% local</string>
+    <string name="link_placeholder">https://youtube.com/..., tiktok.com/..., spotify.com/...</string>
+    <string name="fetch_link">Extraer Audio</string>
+    <string name="start_recording">Grabar Audio / USB DI</string>
+    <string name="stop_recording">Detener Grabación</string>
+    <string name="generate_snaptone">Analizar y Generar SnapTone</string>
+    <string name="export_nam">Descargar .nam</string>
+    <string name="export_ir">Descargar IR .wav</string>
+    <string name="export_pack">Pack GP-5 (.zip)</string>
+    <string name="audition_di">DI Limpio</string>
+    <string name="audition_snaptone">SnapTone (.nam)</string>
+    <string name="audition_ref">Original</string>
+    <string name="gp5_guide_title">Cómo cargar en Valeton GP-5</string>
+    <string name="empty_patches_title">Sin parches guardados aún</string>
+    <string name="empty_patches_desc">Analiza un archivo de audio, enlace o toma de guitarra en Capturar para generar tu primer SnapTone (.nam) e IR (.wav).</string>
+</resources>

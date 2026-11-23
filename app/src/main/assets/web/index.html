@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <title>ToneForge Web · Motor SnapTone (.nam) e IR (.wav)</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Studio Header & Navigation -->
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-logo" aria-hidden="true">
+            <svg viewBox="0 0 32 32" width="26" height="26" fill="none">
+              <defs>
+                <linearGradient id="tfGrad" x1="0" y1="0" x2="32" y2="32">
+                  <stop offset="0%" stop-color="#E52521"/>
+                  <stop offset="55%" stop-color="#FF6A00"/>
+                  <stop offset="100%" stop-color="#FFB800"/>
+                </linearGradient>
+              </defs>
+              <rect x="2" y="2" width="28" height="28" rx="8" stroke="url(#tfGrad)" stroke-width="2" fill="#0B0B0D"/>
+              <path d="M7 18 L10 12 L13 21 L16 9 L19 23 L22 14 L25 18" stroke="url(#tfGrad)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">ToneForge <span class="brand-accent">Web</span></span>
+            <span class="brand-sub">MOTOR LOCAL NAM &amp; SNAPTONE · VALETON GP-5</span>
+          </div>
+        </div>
+
+        <nav class="nav-tabs" aria-label="Navegación principal">
+          <button class="nav-tab active" data-route="capture" id="navCapture">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>
+            </svg>
+            <span>Capturar</span>
+          </button>
+          <button class="nav-tab" data-route="analyzer" id="navAnalyzer">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12h3l3-7 4 14 3-7h5"/>
+            </svg>
+            <span>Análisis</span>
+          </button>
+          <button class="nav-tab" data-route="patches" id="navPatches">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 6h16M4 12h16M4 18h10"/>
+              <circle cx="19" cy="18" r="2"/>
+            </svg>
+            <span>Parches</span>
+            <span class="nav-badge" id="patchesCountBadge">0</span>
+          </button>
+        </nav>
+
+        <div class="topbar-actions">
+          <span class="pill-local" title="Procesamiento 100% en tu navegador sin servidor externo">100% LOCAL</span>
+          <button class="btn btn-ghost btn-sm" id="btnOpenGuideTop" title="Cómo cargar en Valeton GP-5">Guía GP-5</button>
+          <button class="btn btn-outline-yellow btn-sm" id="btnDownloadWebApp" title="Descargar página web independiente (.zip)">Exportar Web</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="main-content">
+      <!-- ==================== VIEW: CAPTURE ==================== -->
+      <section class="view active" id="viewCapture" aria-labelledby="navCapture">
+        <div class="studio-grid">
+          <!-- Left Column: Instrument + Source Input -->
+          <div class="rack-col">
+            <!-- Instrument & Tuning Selector -->
+            <div class="rack-card">
+              <div class="card-head">
+                <span class="card-kicker">INSTRUMENTO Y AFINACIÓN</span>
+                <span class="detect-pill hidden" id="liveDetectBadge">Detectado: Guitarra</span>
+              </div>
+              <div class="chip-row" id="instrumentModeGroup">
+                <button class="chip active" data-instrument="AUTO">Auto</button>
+                <button class="chip" data-instrument="GUITAR">Guitarra</button>
+                <button class="chip" data-instrument="BASS_4">Bajo 4C</button>
+              </div>
+              <p class="hint-text" id="instrumentTuningDesc">Detecta automáticamente Guitarra o Bajo 4C (E-A-D-G)</p>
+            </div>
+
+            <!-- Source Selector Segmented Control -->
+            <div class="segmented-bar" role="tablist" aria-label="Fuente de audio">
+              <button class="seg-btn active" data-source="FILE" role="tab" aria-selected="true">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                </svg>
+                <span>Archivo</span>
+              </button>
+              <button class="seg-btn" data-source="LINK" role="tab" aria-selected="false">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                </svg>
+                <span>Enlace</span>
+              </button>
+              <button class="seg-btn" data-source="MIC" role="tab" aria-selected="false">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="2" width="6" height="11" rx="3"/>
+                  <path d="M5 10a7 7 0 0 0 14 0M12 19v3M8 22h8"/>
+                </svg>
+                <span>Micro / USB</span>
+              </button>
+            </div>
+
+            <!-- Source Panel -->
+            <div class="rack-card">
+              <!-- TAB: FILE -->
+              <div class="source-pane active" id="paneFile">
+                <h2 class="card-title">Importar pista o riff de referencia</h2>
+                <p class="card-sub">WAV, MP3, M4A, FLAC, OGG, WebM, MP4 · Decodificación Web Audio 48 kHz</p>
+                <label class="dropzone" id="fileDropzone" for="audioFileInput">
+                  <input type="file" id="audioFileInput" accept="audio/*,video/*,.wav,.mp3,.m4a,.flac,.ogg,.opus,.mp4,.mkv,.webm" hidden>
+                  <div class="dropzone-icon">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="17 8 12 3 7 8"/>
+                      <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                  </div>
+                  <div class="dropzone-copy">
+                    <strong id="selectedFileLabel">Seleccionar o arrastrar archivo de audio</strong>
+                    <span>Hasta 60 segundos se analizarán a 48 kHz mono</span>
+                  </div>
+                </label>
+              </div>
+
+              <!-- TAB: LINK -->
+              <div class="source-pane" id="paneLink">
+                <h2 class="card-title">Extraer audio desde enlace web</h2>
+                <p class="card-sub">Admite URLs directas (.mp3/.wav/.m4a/.ogg/.flac) y YouTube / TikTok / Spotify en la app Android o servidores CORS.</p>
+                <div class="field-group">
+                  <label class="field-label" for="linkUrlInput">URL del audio o vídeo</label>
+                  <input type="url" class="text-input" id="linkUrlInput" placeholder="https://youtube.com/..., tiktok.com/..., https://.../riff.mp3">
+                </div>
+                <button class="btn btn-primary btn-block" id="btnExtractLink">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                  </svg>
+                  <span>Extraer Audio</span>
+                </button>
+              </div>
+
+              <!-- TAB: MIC -->
+              <div class="source-pane" id="paneMic">
+                <h2 class="card-title">Captura directa por Micrófono o Interfaz USB</h2>
+                <p class="card-sub">Graba tu amplificador, pantalla o interfaz USB DI a 48 kHz sin compresión automática.</p>
+                <div class="vu-meter-wrap">
+                  <div class="vu-meter-track">
+                    <div class="vu-meter-fill" id="vuMeterFill"></div>
+                  </div>
+                </div>
+                <div class="mic-status-row">
+                  <span class="mic-status-label" id="micStatusLabel">LISTO PARA CAPTURAR</span>
+                  <span class="mono-val" id="micDurationLabel">0.0s / 30.0s</span>
+                </div>
+                <button class="btn btn-record btn-block" id="btnToggleRecord">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="2" width="6" height="11" rx="3"/>
+                    <path d="M5 10a7 7 0 0 0 14 0M12 19v3M8 22h8"/>
+                  </svg>
+                  <span id="btnToggleRecordText">Grabar Audio / USB DI</span>
+                </button>
+              </div>
+
+              <div class="alert-box hidden" id="sourceErrorBox"></div>
+              <div class="loading-row hidden" id="sourceLoadingRow">
+                <span class="spinner"></span>
+                <span id="sourceLoadingText">Decodificando PCM a 48 kHz...</span>
+              </div>
+            </div>
+
+            <div class="tip-card" id="captureTipCard">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#FFB800" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+              </svg>
+              <span>Tip: Aísla un riff limpio de guitarra o línea de bajo 4C (E-A-D-G) para generar un SnapTone más fiel.</span>
+            </div>
+          </div>
+
+          <!-- Right Column: Waveform Trimmer + GP-5 Config + Generate -->
+          <div class="rack-col">
+            <div class="rack-card empty-wave-placeholder" id="waveformEmptyPlaceholder">
+              <div class="empty-icon-ring">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#FF6A00" stroke-width="2">
+                  <path d="M2 12h2l2-5 3 10 3-13 3 15 3-9 2 2h2"/>
+                </svg>
+              </div>
+              <h3>Esperando fuente de audio</h3>
+              <p>Importa un archivo local, pega un enlace o graba desde tu micrófono/interfaz USB para habilitar el recortador de onda y el motor DSP.</p>
+            </div>
+
+            <div class="hidden" id="loadedAudioWorkspace">
+              <!-- Interactive Waveform Trimmer -->
+              <div class="rack-card">
+                <div class="card-head">
+                  <div>
+                    <h3 class="card-title truncate" id="audioSourceTitle">Audio cargado</h3>
+                    <span class="mono-meta" id="audioStatsMeta">48 kHz · 0.0s</span>
+                  </div>
+                  <button class="btn btn-outline-orange btn-sm" id="btnPreviewTrim">Escuchar Selección</button>
+                </div>
+
+                <div class="trimmer-box">
+                  <div class="trimmer-head">
+                    <span class="card-kicker">VENTANA DE ANÁLISIS</span>
+                    <span class="mono-accent" id="trimWindowLabel">0.0s — 0.0s (0.0s)</span>
+                  </div>
+                  <canvas id="waveformCanvas" class="waveform-canvas"></canvas>
+                  <div class="trim-sliders-row">
+                    <label class="trim-slider-label">
+                      <span>Inicio</span>
+                      <input type="range" id="trimStartSlider" min="0" max="94" step="1" value="0">
+                    </label>
+                    <label class="trim-slider-label">
+                      <span>Fin</span>
+                      <input type="range" id="trimEndSlider" min="6" max="100" step="1" value="100">
+                    </label>
+                  </div>
+                  <p class="hint-text">Arrastra los tiradores amarillo/rojo sobre la onda o usa los deslizadores para aislar el riff.</p>
+                </div>
+              </div>
+
+              <!-- Valeton GP-5 Config Rack -->
+              <div class="rack-card">
+                <div class="card-head">
+                  <span class="card-kicker">CONFIGURACIÓN VALETON GP-5</span>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="patchNameInput">Nombre del SnapTone / Parche</label>
+                  <input type="text" class="text-input" id="patchNameInput" maxlength="48" placeholder="Ej. Riff Crunch GP5">
+                </div>
+
+                <div class="field-group">
+                  <span class="field-label">MODO DE CAPTURA</span>
+                  <div class="chip-row" id="captureModeGroup">
+                    <button class="chip active" data-capture="FULL_RIG">Full Rig (Amp + Cab)</button>
+                    <button class="chip" data-capture="AMP_PLUS_IR">Amp + IR Separados</button>
+                  </div>
+                  <p class="hint-text" id="captureModeDesc">SnapTone .nam completo listo para cargar sin bloque CAB adicional</p>
+                </div>
+
+                <div class="field-group">
+                  <span class="field-label">ARQUITECTURA .NAM Y RESOLUCIÓN IR</span>
+                  <div class="chip-row" id="modelQualityGroup">
+                    <button class="chip active" data-quality="GP5_NANO">GP-5 Nano (8ch)</button>
+                    <button class="chip" data-quality="STUDIO_LITE">Studio Lite (12ch)</button>
+                  </div>
+                  <div class="chip-row" style="margin-top:8px;">
+                    <button class="chip active" data-ir-rate="48000">48 kHz</button>
+                    <button class="chip" data-ir-rate="44100">44.1 kHz</button>
+                    <button class="chip active" data-ir-len="1024">1024 pts</button>
+                    <button class="chip" data-ir-len="2048">2048 pts</button>
+                  </div>
+                </div>
+
+                <!-- Progress / Generate Button -->
+                <div class="progress-card hidden" id="analysisProgressCard">
+                  <div class="progress-head">
+                    <span id="analysisStatusText">Iniciando motor DSP local...</span>
+                    <span class="mono-accent" id="analysisPercentText">0%</span>
+                  </div>
+                  <div class="progress-track">
+                    <div class="progress-fill" id="analysisProgressFill"></div>
+                  </div>
+                </div>
+
+                <button class="btn btn-fire btn-lg btn-block" id="btnGenerateSnapTone">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M3 12h3l3-7 4 14 3-7h5"/>
+                  </svg>
+                  <span>Analizar y Generar SnapTone</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW: ANALYZER ==================== -->
+      <section class="view" id="viewAnalyzer" aria-labelledby="navAnalyzer">
+        <div class="empty-state" id="analyzerEmptyState">
+          <div class="empty-icon-ring">
+            <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#FF6A00" stroke-width="2">
+              <path d="M3 12h3l3-7 4 14 3-7h5"/>
+            </svg>
+          </div>
+          <h2>Ningún SnapTone seleccionado</h2>
+          <p>Genera un tono en Capturar o elige uno de tus parches guardados para inspeccionar su curva espectral, escucharlo en vivo A/B y exportarlo.</p>
+          <button class="btn btn-fire" id="btnEmptyGoCapture">Ir a Capturar</button>
+        </div>
+
+        <div class="hidden" id="analyzerWorkspace">
+          <div class="studio-grid">
+            <!-- Left Column: Patch Summary + Audition + Chart + Telemetry -->
+            <div class="rack-col">
+              <!-- Patch Banner -->
+              <div class="rack-card">
+                <div class="card-head">
+                  <div style="min-width:0;flex:1;">
+                    <h2 class="patch-hero-title truncate" id="anPatchName">Parche</h2>
+                    <p class="card-sub" id="anPatchSubtitle">Guitarra Eléctrica · Amp · Cab</p>
+                  </div>
+                  <span class="slot-badge" id="anSlotBadge">GP-5 · P01</span>
+                </div>
+                <p class="mono-meta" id="anSpecsLine">Full Rig (.nam) · f0 110 Hz · 48 kHz · 1024 pts</p>
+              </div>
+
+              <!-- Live A/B Audition -->
+              <div class="rack-card">
+                <div class="card-head">
+                  <span class="card-kicker">AUDICIÓN EN VIVO A/B (MOTOR WAVENET)</span>
+                  <span class="playing-badge hidden" id="anPlayingBadge">REPRODUCIENDO</span>
+                </div>
+                <div class="audition-row">
+                  <button class="btn-audition" id="btnAuditionDi" data-audition="DI_CLEAN">
+                    <span class="play-icon">▶</span>
+                    <span id="auditionDiLabel">DI Limpio</span>
+                  </button>
+                  <button class="btn-audition accent" id="btnAuditionNam" data-audition="SNAPTONE_NAM">
+                    <span class="play-icon">▶</span>
+                    <span>SnapTone (.nam)</span>
+                  </button>
+                  <button class="btn-audition" id="btnAuditionRef" data-audition="REFERENCE">
+                    <span class="play-icon">▶</span>
+                    <span>Original</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Spectral Response Graph -->
+              <div class="rack-card">
+                <div class="card-head">
+                  <span class="card-kicker">RESPUESTA ESPECTRAL (30 Hz – 14 kHz)</span>
+                  <div class="legend-row">
+                    <span class="legend-item"><i class="dot dot-orange"></i>Ref</span>
+                    <span class="legend-item"><i class="dot dot-yellow"></i>.nam</span>
+                  </div>
+                </div>
+                <div class="spectral-box">
+                  <canvas id="spectralCanvas" class="spectral-canvas"></canvas>
+                </div>
+                <div class="freq-axis">
+                  <span>30 Hz</span><span>55 Hz</span><span>100 Hz</span><span>500 Hz</span><span>1 kHz</span><span>3 kHz</span><span>8 kHz</span><span>14 kHz</span>
+                </div>
+              </div>
+
+              <!-- Telemetry Tiles -->
+              <div class="telemetry-grid">
+                <div class="telemetry-tile">
+                  <span class="tile-label">GANANCIA</span>
+                  <strong class="tile-val" id="telGain">0/100</strong>
+                  <span class="tile-sub" id="telCategory">Crunch</span>
+                </div>
+                <div class="telemetry-tile">
+                  <span class="tile-label">THD / SAT.</span>
+                  <strong class="tile-val" id="telThd">0.0%</strong>
+                  <span class="tile-sub" id="telHarmonics">Cálido (Pares)</span>
+                </div>
+                <div class="telemetry-tile">
+                  <span class="tile-label">DINÁMICA / SAG</span>
+                  <strong class="tile-val" id="telSag">0%</strong>
+                  <span class="tile-sub" id="telCentroid">1200 Hz foco</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Exports + Valeton Suite + Format Converter + Signal Chain -->
+            <div class="rack-col">
+              <div class="rack-card card-accent-border">
+                <div class="card-head">
+                  <span class="card-kicker text-yellow">DESCARGAR Y EXPORTAR PARA VALETON GP-5</span>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="exportFileNameInput">Nombre de archivo (Artista / Canción / Sonido)</label>
+                  <input type="text" class="text-input" id="exportFileNameInput" placeholder="Ej. Metallica - Master Of Puppets">
+                  <span class="mono-meta truncate" id="exportFilePreview">Archivo: ToneForge.nam · ToneForge_IR.wav</span>
+                </div>
+
+                <!-- Valeton Suite Folder Box -->
+                <div class="valeton-box">
+                  <div class="valeton-head">
+                    <div>
+                      <span class="card-kicker text-yellow">EXPORTAR DIRECTO A VALETON SUITE</span>
+                      <p class="hint-text" id="valetonFolderStatus">Vincula la carpeta de Valeton Suite para guardar en SnapTone / UserIR / Presets</p>
+                    </div>
+                    <button class="btn btn-ghost btn-sm hidden" id="btnChangeValetonFolder">Cambiar</button>
+                  </div>
+                  <div class="valeton-actions">
+                    <button class="btn btn-outline-yellow btn-block" id="btnExportValetonSuite">Elegir carpeta Valeton Suite</button>
+                    <button class="btn btn-ghost hidden" id="btnLaunchValetonApp">Abrir</button>
+                  </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="export-btn-pair">
+                  <button class="btn btn-fire flex-1" id="btnDownloadNam">Descargar .nam</button>
+                  <button class="btn btn-icon" id="btnShareNam" title="Compartir .nam" aria-label="Compartir .nam">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="export-btn-pair">
+                  <button class="btn btn-outline-orange flex-1" id="btnDownloadIr">Descargar IR .wav</button>
+                  <button class="btn btn-icon" id="btnShareIr" title="Compartir IR .wav" aria-label="Compartir IR .wav">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                    </svg>
+                  </button>
+                </div>
+
+                <button class="btn btn-secondary btn-block" id="btnDownloadZipPack">
+                  Pack GP-5 (.zip) · .nam + IR .wav + Guía
+                </button>
+
+                <button class="btn btn-outline-yellow btn-block" id="btnDownloadPdf">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="12" y1="18" x2="12" y2="12"/>
+                    <polyline points="9 15 12 18 15 15"/>
+                  </svg>
+                  Descargar Resumen PDF (.pdf) · Parche + Receta GP-5
+                </button>
+              </div>
+
+              <!-- Format Converter Card -->
+              <div class="rack-card">
+                <div class="card-head">
+                  <span class="card-kicker text-orange">CONVERSIÓN LOCAL DE AUDIO IR</span>
+                </div>
+                <div class="chip-row wrap" id="convertFormatChips">
+                  <button class="chip active" data-fmt="wav16">WAV 16b</button>
+                  <button class="chip" data-fmt="flac">FLAC</button>
+                  <button class="chip" data-fmt="mp3">MP3</button>
+                  <button class="chip" data-fmt="m4a">M4A</button>
+                  <button class="chip" data-fmt="ogg">OGG</button>
+                  <button class="chip" data-fmt="opus">OPUS</button>
+                </div>
+                <button class="btn btn-outline-orange btn-block" id="btnConvertIrFormat">
+                  Convertir IR a .wav (16-bit) y descargar
+                </button>
+              </div>
+
+              <!-- Valeton GP-5 Signal Chain Recipe -->
+              <div class="rack-card">
+                <div class="card-head">
+                  <span class="card-kicker">RECETA CADENA VALETON GP-5</span>
+                </div>
+                <div class="chain-list" id="gp5ChainList"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW: PATCHES ==================== -->
+      <section class="view" id="viewPatches" aria-labelledby="navPatches">
+        <div class="patches-header">
+          <div>
+            <h2>Gestor de Parches GP-5</h2>
+            <p class="card-sub" id="patchesSubtitle">0 tonos locales listos para Valeton Suite</p>
+          </div>
+          <button class="btn btn-outline-yellow btn-sm" id="btnOpenGuidePatches">Guía GP-5</button>
+        </div>
+
+        <div class="patches-toolbar">
+          <div class="search-wrap">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#8C8C96" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="search" id="patchesSearchInput" class="search-input" placeholder="Buscar por nombre, slot (P01) o notas...">
+          </div>
+          <div class="chip-row scroll-x" id="categoryFilterChips">
+            <button class="chip active" data-cat="Todos">Todos</button>
+            <button class="chip" data-cat="Favoritos">Favoritos</button>
+            <button class="chip" data-cat="Guitarra">Guitarra</button>
+            <button class="chip" data-cat="Bajo 4C">Bajo 4C</button>
+            <button class="chip" data-cat="Clean">Clean</button>
+            <button class="chip" data-cat="Crunch">Crunch</button>
+            <button class="chip" data-cat="High Gain">High Gain</button>
+            <button class="chip" data-cat="Lead">Lead</button>
+          </div>
+        </div>
+
+        <div class="batch-bar hidden" id="batchSelectBar">
+          <span id="batchSelectedCount">0 seleccionados</span>
+          <div class="batch-actions">
+            <button class="btn btn-ghost btn-sm" id="btnClearMultiSelect">Cancelar</button>
+            <button class="btn btn-fire btn-sm" id="btnBatchExport">Exportar / Suite</button>
+          </div>
+        </div>
+
+        <div class="empty-state hidden" id="patchesEmptyState">
+          <div class="empty-icon-ring">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#FF6A00" stroke-width="2">
+              <path d="M9 18V5l12-2v13"/>
+              <circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+            </svg>
+          </div>
+          <h3>Sin parches guardados aún</h3>
+          <p>Analiza un archivo de audio, enlace o toma de guitarra en Capturar para generar tu primer SnapTone (.nam) e IR (.wav).</p>
+        </div>
+
+        <div class="patches-grid" id="patchesList"></div>
+      </section>
+    </main>
+
+    <!-- Toast / Snackbar -->
+    <div class="toast hidden" id="toastBar" role="status" aria-live="polite"></div>
+
+    <!-- Modal: Edit Patch -->
+    <div class="modal-backdrop hidden" id="modalEditPatch">
+      <div class="modal-card">
+        <h3>Editar parche GP-5</h3>
+        <div class="field-group">
+          <label class="field-label" for="editPatchName">Nombre</label>
+          <input type="text" class="text-input" id="editPatchName">
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="editPatchSlot">Slot Valeton GP-5 (ej. P01)</label>
+          <input type="text" class="text-input" id="editPatchSlot" maxlength="8">
+        </div>
+        <div class="field-group">
+          <span class="field-label">Categoría</span>
+          <div class="chip-row wrap" id="editPatchCategoryGroup">
+            <button class="chip" data-ecat="Clean">Clean</button>
+            <button class="chip" data-ecat="Crunch">Crunch</button>
+            <button class="chip" data-ecat="High Gain">High Gain</button>
+            <button class="chip" data-ecat="Lead">Lead</button>
+            <button class="chip" data-ecat="Bass">Bass</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="editPatchNotes">Notas / Guitarra / Pastillas</label>
+          <textarea class="text-input" id="editPatchNotes" rows="3"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-ghost" id="btnCancelEdit">Cancelar</button>
+          <button class="btn btn-fire" id="btnSaveEdit">Guardar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Delete Confirm -->
+    <div class="modal-backdrop hidden" id="modalDeletePatch">
+      <div class="modal-card">
+        <h3>Eliminar parche</h3>
+        <p class="card-sub" id="deleteConfirmText">Se borrarán el parche y sus datos locales.</p>
+        <div class="modal-actions">
+          <button class="btn btn-ghost" id="btnCancelDelete">Cancelar</button>
+          <button class="btn btn-record" id="btnConfirmDelete">Eliminar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: GP-5 Guide -->
+    <div class="modal-backdrop hidden" id="modalGp5Guide">
+      <div class="modal-card">
+        <h3>Cómo cargar en Valeton GP-5</h3>
+        <ol class="guide-list">
+          <li>Descarga el archivo <strong>.nam</strong> (o el <strong>Pack .zip</strong> completo) desde Análisis o Parches.</li>
+          <li>Abre la app oficial <strong>Valeton Suite</strong> (en móvil por Bluetooth o en PC/Mac por USB-C).</li>
+          <li>En el bloque <strong>AMP → SnapTone</strong>, importa el archivo <code>.nam</code>; Valeton Suite lo optimiza automáticamente para el DSP de tu GP-5.</li>
+          <li>Si elegiste modo <strong>Amp + IR Separados</strong>, carga el archivo <code>_IR.wav</code> en el bloque <strong>CAB → User IR</strong>. Si elegiste <strong>Full Rig</strong>, deja CAB apagado.</li>
+        </ol>
+        <div class="modal-actions">
+          <button class="btn btn-fire" id="btnCloseGuide">Entendido</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Batch / Valeton Suite Export -->
+    <div class="modal-backdrop hidden" id="modalValetonExport">
+      <div class="modal-card modal-wide">
+        <h3 id="valetonModalTitle">Exportar parche con nombre</h3>
+        <div class="valeton-box" style="margin-bottom:12px;">
+          <div class="valeton-head">
+            <div>
+              <strong class="text-yellow" id="modalValetonFolderName">Carpeta Valeton Suite no elegida</strong>
+              <p class="hint-text" id="modalValetonSlotHint">Presets vacíos desde P01 en orden</p>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="btnModalPickValetonFolder">Elegir</button>
+          </div>
+        </div>
+        <div class="modal-scroll-list" id="modalExportItemsList"></div>
+        <div class="modal-actions">
+          <button class="btn btn-ghost" id="btnModalCancelExport">Cancelar</button>
+          <button class="btn btn-secondary" id="btnModalExportZip">ZIP</button>
+          <button class="btn btn-fire" id="btnModalConfirmValeton">A Valeton Suite</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="zip.js"></script>
+  <script src="pdf.js"></script>
+  <script src="db.js"></script>
+  <script src="dsp.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

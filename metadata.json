@@ -1,0 +1,8 @@
+{
+  "name": "ToneForge web",
+  "description": "Generador local de SnapTones (.nam), IRs (.wav) y parches para Valeton GP-5 desde archivos de audio, enlaces y captura directa.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
